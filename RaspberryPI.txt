@@ -1,0 +1,209 @@
+Raspberry Pi
+============
+
+Raspbian
+Computername: raspberrypi
+User: pi
+Pwd:  raspberry
+
+
+OpenElec
+Computername: OpenELEC
+User: root
+Pwd:  openelec
+
+IP: (LAN)	192.168.178.37 (Elec)
+	(WLAN)	192.168.178.45 (Garten)	  Raspberry2
+	(WLAN)	192.168.178.63 (Versuch)  Raspberry3
+	
+HTTP Zugriff
+User: Dieter
+Pwd:  dihepama	
+
+Raspbian
+Computername: raspberrypi2
+User: pi
+Pwd:  raspberry
+
+WebIOPi
+User: keiner
+Pwd:
+
+Raspberry3 Rott Pwd=raspberry3
+
+
+Allgemeines
+===========
+Verzeichnis für Dienste: /etc/init.d
+Webiopi Dienst starten: sudo /etc/init.d/webiopi start
+neu starten: sudo /etc/init.d/webiopi restart
+Dienst deaktivieren: sudo update-rc.d -f  webiopi remove
+
+Unter Raspbian Wheezy verwendet man "update-rc.d", um Dienste in den einzelnen Runleveln zu aktivieren und zu deaktivieren.
+In der Regel werden Dienste bei der Installation automatisch gestartet und in den richtigen Runlevel eingetragen. Es kann aber sein, dass man den Dienst vorübergehend außer Betrieb genommen hat und jetzt wieder aktivieren möchte.
+Wenn man einen deaktivierten Dienst beim Booten automatisch gestartet haben möchte, kann man mit folgendem Kommando die Links zum Start-/Stop-Script anlegen.
+
+Dienst soll in Zukunft automatisch starten:
+sudo update-rc.d webiopi defaults
+
+Dienst soll in Zukunft NICHT mehr automatisch starten. Hierbei werden die Links zum Start-/Stop-Script aus den Runlevels gelöscht.
+sudo update-rc.d -f webiopi remove
+
+WebIOPi
+=======
+Konfigdatei "config" im Verzeichnis /etc/webiopi
+Verzeichnis der index.html des WebIOPi: /home/pi/WebIOPi-0.7.1/htdocs
+Datei für IO-Auswahl: app/gpio-header=index.html
+
+HTML-Datei für Gartenbeleuchtung "index.html": /home/pi/SmartHome/html/index.html
+Script-Datei für Gartenbeleuchtung "script.py": /home/pi/SmartHome/python/script.py
+
+
+
+Installation
+============
+
+1. Aktuelles Image des Raspberian downloaden, entpacken und auf die Flash-Karte schreiben.
+2. Nach der Installation das System konfigurieren - zuerst über Assistend des Desktops, dann über Console "sudo raspi-config". Hier z.B. Gerätenamen anpassen.
+3. WebIOPi + Patch installieren. Siehe: https://raspberrypi.stackexchange.com/questions/68501/webiopi-patch-for-raspberry-pi-zero-w
+
+ Patch installieren siehe https://github.com/doublebind/raspi
+	$ wget http://sourceforge.net/projects/webiopi/files/WebIOPi-0.7.1.tar.gz
+	$ tar xvzf WebIOPi-0.7.1.tar.gz
+	$ cd WebIOPi-0.7.1
+	$ wget https://raw.githubusercontent.com/doublebind/raspi/master/webiopi-pi2bplus.patch
+	$ patch -p1 -i webiopi-pi2bplus.patch
+	$ sudo ./setup.sh
+
+
+4. Anmeldung löschen: Datei passwd im Verzeichnis /etc/webiopi löschen: sudo rm passwd
+5. Starten
+	$ sudo webiopi -d -c /etc/webiopi/config
+	$ sudo /etc/init.d/webiopi start		==> Dienst starten
+	$ sudo /etc/init.d/webiopi stop			==> Dienst beenden
+	$ sudo update-rc.d webiopi defaults		==> damit Dienst beim Starten selbstständig ausgeführt wird
+ 	
+
+FTP installieren: http://blog.simtronyx.de/raspberry-pi-ftp-zugang-einrichten/
+
+Installation Python: (Aktuelle Version nachsehen bei Python.org)
+wget https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tar.xz
+ tar xf Python-3.8.1.tar.xz
+ cd Python-3.8.1
+ ./configure
+ make -j 4
+ sudo make altinstall
+
+Allgemeine Kommandos
+====================
+
+Desktop starten: sudo startx
+Rasp neu starten: sudo shutdown -h 0
+Datei löschen:	rm <file>
+Ordner anlegen: mkdir /home/pi/<verzeichnis>
+Als root anmelden: sudo su 
+Datei suchen: find -name <dateiname>   evtl. noch sudo voranstellen
+
+
+
+-----------------------------
+WebIOPi - Service stoppen
+
+sudo /etc/init.d/webiopi stop  
+
+>>> then start webiopi in debug mode    
+
+sudo webiopi -d -c /etc/webiopi/config if this doesn't work then:-
+
+
+sudo update-rc.d webiopi remove			// automatischer Start des Dienstes abschalten
+sudo /etc/init.d/webiopi stop			// Dienst beenden
+
+--> falls er sich nicht beenden läßt:
+
+sudo netstat -antp | grep 8000
+liefert: z.B.:   tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      2874/python3		// 2874 ist die Id des Processes
+
+ps aux | grep 2874
+
+sudo kill -9 2874
+
+
+
+=========================================================================================================================
+
+
+1. if you start webiopi automatically on boot ( like if you did sudo update-rc.d webiopi defaults) then in a new shh window enter sudo update-rc.d webiopi remove    to stop webiopi loading automatically) 
+
+2. Before you try to start webiopi in the foreground you need to stop webiopi running in the back ground with   sudo /etc/init.d/webiopi stop  then start webiopi in debug mode    sudo webiopi -d -c /etc/webiopi/config if this doesn't work then:-
+
+3. You can try  sudo netstat -antp | grep 8000     and look for a line like :
+tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      2874/python3
+
+for sure the number 2874 on your screen will be different use whatever number you see.
+
+then:
+
+ps aux | grep 2874   you should see the instance of webiopi running 
+
+kill it with:
+
+sudo kill -9 2874
+
+
+==================================================================================
+WLAN Einrichten
+===============
+
+Lösung (Variante 2): WLAN-Konfiguration mit "wpa_supplicant"
+
+Diese Lösung ist unter Umständen zu bevorzugen. Denn das Software-Paket "wpa_supplicant" erkennt Funknetze und übernimmt den automatischen Verbindungsaufbau.
+
+Für die Konfiguration der Funknetze existiert eine Datei, die auch von den Netzwerk-Managern der Desktop-Oberflächen verwendet wird.
+
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+Hier müssen sich folgende Zeilen befinden oder ergänzt werden.
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+Gefolgt von den einzelnen WLAN-Netzen:
+
+network={
+   ssid="WLAN-SSID"
+   psk="WLAN-PASSWORT"
+}
+
+Anschließend speichern und schließen: Strg + O, Return, Strg + X.
+
+Es ist aber gar nicht notwendig, die Datei zu öffnen und zu bearbeiten. Man kann die Einträge auch automatisch erstellen.
+
+sudo wpa_passphrase "WLAN-NAME" "WLAN-PASSWORT" >> /etc/wpa_supplicant/wpa_supplicant.conf
+
+Es erscheint folgende Fehlermeldung: "-bash: /etc/wpa_supplicant/wpa_supplicant.conf: Keine Berechtigung".
+
+Was ist das Problem? Mit "sudo" wird das Kommando mit Root-Rechten ausgeführt, aber die Konfigurationsdatei lässt sich so nicht beschreiben. Man muss echt "root" sein, damit es funktioniert.
+
+sudo -i
+wpa_passphrase "WLAN-NAME" "WLAN-PASSWORT" >> /etc/wpa_supplicant/wpa_supplicant.conf
+exit
+
+Schauen wir mal, was wir angestellt haben:
+
+sudo cat /etc/wpa_supplicant/wpa_supplicant.conf
+
+Dieses Kommando hat ein neues WLAN-Netz mit der richtigen Syntax am Ende der Konfigurationsdatei hinzugefügt. Gleichzeitig hat es das WLAN-Passwort in einen Hash-Wert umgewandelt, damit die WLAN-Verbindung schneller zustande kommt. Wenn man möchte kann man jetzt noch das Klartext-Passwort aus der Datei löschen (optional).
+
+Jetzt kann man sich noch testweise mit dem WLAN verbinden.
+
+sudo wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+Alternativ:
+
+sudo wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf &
+
+Das abschließende "&" schickt den Prozess in den Hintergrund.
+
+Sofern die Datei "/etc/network/interfaces" dem Original entspricht, sollte nach einem Reboot die Verbindung zum WLAN automatisch aufgebaut werden.

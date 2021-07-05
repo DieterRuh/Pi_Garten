@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Gartenbeleuchtung ein/ausschalten</title>
+    <script type="text/javascript" src="/webiopi.js"></script>
+    <script type="text/javascript">
+    webiopi().ready(function() {
+    var updateLightHours = function(macro, args, response) 
+    {
+        var hours = response.split(";");
+        // Following lines use jQuery functions
+        $("#inputOn").val(hours[0]);
+        $("#inputOff").val(hours[1]);
+    }
+      // Immediately call getLightHours macro to update the UI with current values
+      // "getLightHours" refers to macro name
+      // [] is an empty array, because getLightHours macro does not take any argument
+      // updateLightHours is the callback function, defined above
+      webiopi().callMacro("getLightHours", [], updateLightHours);  
+
+      var button = webiopi().createGPIOButton(25, "Brunnen");
+      $("#controls").append(button);
+      button = webiopi().createGPIOButton(24, "Hoflicht");
+      $("#controls").append(button);
+      button = webiopi().createGPIOButton(23, "Gartenlicht");
+      $("#controls").append(button);
+      button = webiopi().createGPIOButton(18, "Weglicht");
+      $("#controls").append(button);
+      webiopi().refreshGPIO(true);
+
+    });
+    </script>
+    <style type="text/css">
+	button {
+		display: block;
+		margin: 5px 5px 5px 5px;
+		width: 600px;
+		height: 200px;
+		font-size: 48pt;
+		font-weight: bold;
+		color: white;
+	}
+        #gpio25.LOW {
+            background-color: Red;
+        }
+        #gpio25.HIGH {
+            background-color: Black;
+        }
+        #gpio24.LOW {
+            background-color: Red;
+        }
+        #gpio24.HIGH {
+            background-color: Black;
+        }
+        #gpio23.LOW {
+            background-color: Red;
+        }
+        #gpio23.HIGH {
+            background-color: Black;
+        }
+        #gpio18.LOW {
+            background-color: Red;
+        }
+        #gpio18.HIGH {
+            background-color: Black;
+        }
+    </style>
+</head>
+<body>
+<div align="center">
+<div id="controls" align="center"></div>
+Einschaltzeit: <input type="text" id="inputOn" /><br/> 
+Ausschaltzeit: <input type="text" id="inputOff" /><br/> 
+</div>
+</body>
+</html>
