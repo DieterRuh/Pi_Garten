@@ -1,7 +1,7 @@
-﻿NextCloud - Einstellungen
+﻿piNextCloud - Einstellungen
 =========================
 
-IP-Adresse: 192.168.178.63  (RuhsCloud)
+IP-Adresse: 192.168.178.63  (DieterRuh.ddns.net)
 
 
 User:	pi
@@ -12,8 +12,8 @@ sudo ncp-config
 
 
 dyndns
-  dieterruh.ddns.net
-  User (Anmeldung): dieter_ruh@arcor.de
+  DieterRuh.ddns.net
+  User (Anmeldung): dieter_ruh@hotmail.de
   Username: dieterruh
   Pwd: 8ftlyu44
 
@@ -36,7 +36,7 @@ Installation 21.05.21
 
 		ACTIVE = yes
 		USER = dieter_ruh@arcor.de
-		DOMAIN = dieterruh.ddns.net
+		DOMAIN = dieterruh.ddns.net (TheRuhs.ddns.net)
     		PASSWORD = 8ftlyu44
 
 5. Browser starten http://192.168.178.63
@@ -47,6 +47,7 @@ Installation 21.05.21
 7. Benutzer anlegen:
                                 ncp     MeAweFX19
 				Dieter	MeAweFX19	   dieter_ruh@hotmail.de
+				Hedi	MeAweOpelK		   hedwig_ruh@arcor.de
 				Patrick MeAweB1er	   ruh.patrick.1994@gmail.com
 				Marvin	MeAweAudiA3        marvin.ruh@web.de
 
@@ -61,20 +62,21 @@ ConfigPanel
 User (NextCloudPi): ncp Pwd : 2Nb2jhsBJZkDs9BAr71cWE+2YsY4GipEwGMPOU0ui/k   (nur zur Administration)
 
 NextCloud
-User (NextCloud): ncp Ppd:  3Or+PJ3Eubo/ZDQO86TXEmeP5N39M+VvTz6pAKHSi8Y		(alle Benutzer der Cloud + Anmeldung als Benutzer NCP)
-ACHTUNG Passwort geändert: MeAweFX19
+User (NextCloud): ncp Ppd:  3Or+PJ3Eubo/ZDQO86TXEmeP5N39M+VvTz6pAKHSi8Y	(alt!?)	(alle Benutzer der Cloud + Anmeldung als Benutzer NCP)
+ACHTUNG Passwort geändert: Hx37%AB839
 Passwort bei der Erstanmeldung nach installation des NextCloudpi-Image verwenden
 
 Datei-Assoziationen
 ===================
+Verzeichnis der Installation: /var/www/nextcloud/   => root Rechte erforderlich z.B. sudo su
 
 In Datei mimetypemapping.json bzw. Mimetypealiases.json
-Dateien liegen im Verzeichnis ./resources/config/mimetypemapping.json
+Dateien liegen im Verzeichnis ./resources/config/mimetypemapping.dist.json
  
 Nach dem Ändern muss folgender Befehl ausgeführt werden:
 sudo -u www-data php occ maintenance:mimetype:update-js
 
-Verzeichnis der Installation: /var/www/nextcloud/   => root Rechte erforderlich z.B. sudo su
+
  
 
 
@@ -85,3 +87,4 @@ LINUX - Kommandos
 sudo shutdown -r now    ==> sofort neu booten
 sudo -s			==> console als root ausführen
 logout			==> verlassen des root modus
+		

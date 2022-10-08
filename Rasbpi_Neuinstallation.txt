@@ -1,0 +1,7 @@
+Rasberian installieren
+======================
+
+1. Download des Image von Internetseite: https://www.raspberrypi.com/software/operating-systems/
+
+2. Raspberry Pi Image starten und Image auf Flash speichern oder ...img.xy Datei mit 7-Zip entpacken und mit Tool ImageUSB auf sd-Karte kopieren
+
